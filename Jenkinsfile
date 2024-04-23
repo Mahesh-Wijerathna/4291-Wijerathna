@@ -11,7 +11,7 @@ pipeline {
             }
         }
 
-        / Added Test Stage
+        // Added Test Stage
         stage('Test') {
             steps {
                 script {
@@ -53,7 +53,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {  
-                sh 'docker build -t my-node-app:%BUILD_NUMBER% .'
+                sh 'docker build -t my-node-app .'
             }
         }
         stage('Login to Docker Hub') {
@@ -67,7 +67,7 @@ pipeline {
         }
         stage('Push Image') {
             steps {
-                sh 'docker push maheshwijerathna/nodeapp-cuban:%BUILD_NUMBER%'
+                sh 'docker push maheshwijerathna/my-node-app'
             }
         }
     }
