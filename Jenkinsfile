@@ -53,7 +53,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {  
-                sh 'docker build -t my-node-app .'
+                sh 'docker build -t 4291-wijerathna .'
             }
         }
         stage('Login to Docker Hub') {
@@ -67,7 +67,7 @@ pipeline {
         }
         stage('Push Image') {
             steps {
-                sh 'docker push maheshwijerathna/my-node-app'
+                sh 'docker push maheshwijerathna/4291-wijerathna'
             }
         }
     }
