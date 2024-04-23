@@ -1,8 +1,7 @@
 pipeline {
-    agent any 
-   
-    
-    stages { 
+    agent any
+
+    stages {
         stage('SCM Checkout') {
             steps {
                 retry(3) {
@@ -17,7 +16,7 @@ pipeline {
                 script {
                     try {
                         // Update apt and install npm without sudo (adjust based on your needs)
-                        sh 'apt update && apt install -y npm'  // Combined commands
+                        sh 'apt update && apt install -y npm'
 
                         // Navigate to the directory containing package.json (assuming it's in workspace)
                         dir("${WORKSPACE}") {
@@ -31,6 +30,7 @@ pipeline {
                 }
             }
         }
+
         // Added Build Stage
         stage('Build') {
             steps {
@@ -40,8 +40,8 @@ pipeline {
                         dir("${WORKSPACE}") {
                             // Install dependencies
                             sh 'npm install'
-                            // Run build command
-                            sh 'npm run build'  // Assuming build command is 'npm run build'
+                            // Run build command (assuming build command is 'npm run build')
+                            sh 'npm run build'
                         }
                     } catch (err) {
                         echo "Error occurred during build: ${err}"
@@ -52,22 +52,22 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            steps {  
-                sh 'docker build -t 4291-wijerathna .'
+            steps {
+                sh 'docker build -t maheshwijerathna/4291-wijerathna .'  // Ensure image name consistency
             }
         }
         stage('Login to Docker Hub') {
             steps {
                 withCredentials([string(credentialsId: 'DockerHubPassword', variable: 'MaheshDockerHub')]) {
-                script{
-                    sh 'docker login -u maheshwijerathna -p ${MaheshDockerHub}'
+                    script{
+                        sh 'docker login -u maheshwijerathna -p ${MaheshDockerHub}'
                     }                    
                 }
             }
         }
         stage('Push Image') {
             steps {
-                sh 'docker push maheshwijerathna/4291-wijerathna'
+                sh 'docker push maheshwijerathna/4291-wijerathna'  // Ensure image name consistency
             }
         }
     }
