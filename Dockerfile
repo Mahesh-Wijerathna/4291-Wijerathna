@@ -1,24 +1,38 @@
-# Use the latest version of the Node.js image as the base image
-FROM node:latest  
+# syntax=docker/dockerfile:1
 
-# Set the working directory inside the container
-WORKDIR /app
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Dockerfile reference guide at
+# https://docs.docker.com/go/dockerfile-reference/
 
-# Install npm package manager
-RUN apt-get update && apt-get install -y npm
+# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
-# Copy package.json and package-lock.json files to the container
-COPY package*.json ./
+ARG NODE_VERSION=21.7.3
 
-# Install dependencies
-RUN npm install
+FROM node:${NODE_VERSION}-alpine
 
-# Copy the rest of the application code to the container
+# Use production node environment by default.
+ENV NODE_ENV production
+
+
+WORKDIR /usr/src/app
+
+# Download dependencies as a separate step to take advantage of Docker's caching.
+# Leverage a cache mount to /root/.npm to speed up subsequent builds.
+# Leverage a bind mounts to package.json and package-lock.json to avoid having to copy them into
+# into this layer.
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=package-lock.json,target=package-lock.json \
+    --mount=type=cache,target=/root/.npm \
+    npm ci --omit=dev
+
+# Run the application as a non-root user.
+USER node
+
+# Copy the rest of the source files into the image.
 COPY . .
 
-# Expose the port the app runs on
+# Expose the port that the application listens on.
 EXPOSE 3000
 
-# Command to run the application
-CMD ["npm", "start"]
-
+# Run the application.
+CMD npm start
