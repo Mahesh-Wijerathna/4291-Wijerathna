@@ -10,18 +10,16 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage("Test") {
             steps {
                 script {
                     try {
-                        // Update apt and install npm without sudo (adjust based on your needs)
-                        sh 'apt update && apt install -y npm'  // Combined commands
-
-                        // Navigate to the directory containing package.json (assuming it's in workspace)
-                        dir("${WORKSPACE}") {
-                            // Run npm test
-                            sh 'npm test'
-                        }
+                        // Update apt and install npm without sudo
+                        sh 'sudo -S apt update < /dev/null'
+                        sh 'sudo -S apt install -y npm < /dev/null'
+                        
+                        // Run npm test
+                        sh 'npm test'
                     } catch (err) {
                         echo "Error occurred during testing: ${err}"
                         currentBuild.result = 'FAILURE'
