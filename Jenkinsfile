@@ -56,24 +56,6 @@ pipeline {
                 sh 'docker build -t 4291_wijerathna .'  // Ensure image name consistency
             }
         }
-        stage('Login to Docker Hub') {
-            steps {
-                withCredentials([string(credentialsId: 'DockerHubPassword', variable: 'MaheshDockerHub')]) {
-                    script{
-                        sh 'docker login -u maheshwijerathna -p ${MaheshDockerHub}'
-                    }                    
-                }
-            }
-        }
-        stage('Push Image') {
-            steps {
-                sh 'docker push maheshwijerathna/4291_wijerathna'  // Ensure image name consistency
-            }
-        }
-    }
-    post {
-        always {
-            sh 'docker logout'
-        }
+        
     }
 }
