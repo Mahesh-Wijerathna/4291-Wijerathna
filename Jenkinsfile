@@ -10,28 +10,70 @@ pipeline {
                 }
             }
         }
+
+        / Added Test Stage
+        stage('Test') {
+            steps {
+                script {
+                    try {
+                        // Update apt and install npm without sudo (adjust based on your needs)
+                        sh 'apt update && apt install -y npm'  // Combined commands
+
+                        // Navigate to the directory containing package.json (assuming it's in workspace)
+                        dir("${WORKSPACE}") {
+                            // Run npm test
+                            sh 'npm test'
+                        }
+                    } catch (err) {
+                        echo "Error occurred during testing: ${err}"
+                        currentBuild.result = 'FAILURE'
+                    }
+                }
+            }
+        }
+        // Added Build Stage
+        stage('Build') {
+            steps {
+                script {
+                    try {
+                        // Navigate to the directory containing package.json (assuming it's in workspace)
+                        dir("${WORKSPACE}") {
+                            // Install dependencies
+                            sh 'npm install'
+                            // Run build command
+                            sh 'npm run build'  // Assuming build command is 'npm run build'
+                        }
+                    } catch (err) {
+                        echo "Error occurred during build: ${err}"
+                        currentBuild.result = 'FAILURE'
+                    }
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {  
-                bat 'docker build -t maheshwijerathna/my-node-app:%BUILD_NUMBER% ./devops'
+                sh 'docker build -t my-node-app:%BUILD_NUMBER% .'
             }
         }
         stage('Login to Docker Hub') {
             steps {
-                withCredentials([string(credentialsId: 'my-node-app2', variable: 'my-node-app2')]) {
-    
-                    bat'docker login -u maheshwijerathna -p ${62672541ol}'
+                withCredentials([string(credentialsId: 'DockerHubPassword', variable: 'MaheshDockerHub')]) {
+                script{
+                    sh 'docker login -u maheshwijerathna -p ${MaheshDockerHub}'
+                    }                    
                 }
             }
         }
         stage('Push Image') {
             steps {
-                bat 'docker push adomicarts/nodeapp-cuban:%BUILD_NUMBER%'
+                sh 'docker push maheshwijerathna/nodeapp-cuban:%BUILD_NUMBER%'
             }
         }
     }
     post {
         always {
-            bat 'docker logout'
+            sh 'docker logout'
         }
     }
 }
