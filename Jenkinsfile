@@ -53,7 +53,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t 4291_wijerathna .'  // Ensure image name consistency
+                sh 'docker build -t 4291_wijerathna .' 
             }
         }
         
