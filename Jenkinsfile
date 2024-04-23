@@ -16,7 +16,8 @@ pipeline {
                 script {
                     try {
                         // Update apt and install npm without sudo (adjust based on your needs)
-                        sh 'apt update && apt install -y npm'
+                        sh 'sudo -S apt update < /dev/null'
+                        sh 'sudo -S apt install -y npm < /dev/null'
 
                         // Navigate to the directory containing package.json (assuming it's in workspace)
                         dir("${WORKSPACE}") {
