@@ -53,7 +53,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t maheshwijerathna/4291-wijerathna .'  // Ensure image name consistency
+                sh 'docker build -t 4291_wijerathna .'  // Ensure image name consistency
             }
         }
         stage('Login to Docker Hub') {
@@ -67,7 +67,7 @@ pipeline {
         }
         stage('Push Image') {
             steps {
-                sh 'docker push maheshwijerathna/4291-wijerathna'  // Ensure image name consistency
+                sh 'docker push maheshwijerathna/4291_wijerathna'  // Ensure image name consistency
             }
         }
     }
